@@ -20,6 +20,8 @@ services:
         value: https://ngonidzashe-hunzvi.onrender.com
     healthCheckPath: /
     autoDeploy: true
+    healthCheckPath: /
+    autoDeploy: true
       - key: APP_URL
         sync: false
     healthCheckPath: /

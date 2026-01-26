@@ -3,8 +3,10 @@ services:
     name: ngonidzashe-hunzvi
     runtime: php
     plan: free
-    buildCommand: chmod +x .render-build.sh && ./.render-build.sh
-    startCommand: php artisan serve --host=0.0.0.0 --port=$PORT
+    buildCommand: |
+      chmod +x .render-build.sh
+      ./.render-build.sh
+    startCommand: php -S 0.0.0.0:$PORT -t public
     envVars:
       - key: APP_ENV
         value: production
@@ -14,6 +16,10 @@ services:
         value: stderr
       - key: LOG_LEVEL
         value: error
+      - key: APP_URL
+        value: https://ngonidzashe-hunzvi.onrender.com
+    healthCheckPath: /
+    autoDeploy: true
       - key: APP_URL
         sync: false
     healthCheckPath: /

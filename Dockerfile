@@ -1,10 +1,9 @@
-# Base PHP CLI image
+# Stage 1: Build stage
 FROM php:8.2-cli
 
-# Set working directory
 WORKDIR /var/www
 
-# Install system dependencies
+# Install PHP extensions and system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -13,8 +12,10 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     zip \
     sudo \
-    && docker-php-ext-install pdo pdo_sqlite zip \
-    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && docker-php-ext-install pdo pdo_sqlite zip
+
+# Install Node.js 20 LTS
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
     && npm install -g npm@latest \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -22,10 +23,10 @@ RUN apt-get update && apt-get install -y \
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Copy app files
+# Copy application files
 COPY . .
 
-# Install dependencies & build
+# Run your Laravel build script
 RUN chmod +x .render-build.sh && ./.render-build.sh
 
 # Expose port

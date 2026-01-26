@@ -1,17 +1,36 @@
 services:
   - type: web
     name: ngonidzashe-hunzvi
+    env: php
     plan: free
-    buildCommand: chmod +x .render-build.sh && ./.render-build.sh
+
+    buildCommand: |
+      chmod +x .render-build.sh
+      ./.render-build.sh
+
     startCommand: php artisan serve --host=0.0.0.0 --port=$PORT
+
     envVars:
       - key: APP_ENV
         value: production
+
       - key: APP_DEBUG
         value: false
+
       - key: LOG_CHANNEL
         value: stderr
+
       - key: LOG_LEVEL
+        value: error
+
+      - key: APP_URL
+        value: https://ngonidzashe-hunzvi.onrender.com
+
+      - key: APP_KEY
+        generateValue: true
+
+    healthCheckPath: /
+    autoDeploy: true
         value: error
       - key: APP_URL
         sync: false

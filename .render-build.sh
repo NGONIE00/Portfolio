@@ -3,6 +3,10 @@ set -e
 
 echo "🚀 Starting Laravel deployment build..."
 
+# Check PHP version
+echo "🔍 Checking PHP version..."
+php -v
+
 # Install PHP dependencies
 echo "📦 Installing Composer dependencies..."
 composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist

@@ -33,6 +33,7 @@ git push origin main
    - **Branch**: `main`
    - **Root Directory**: (leave empty)
    - **Runtime**: `PHP`
+   - **PHP Version**: Select `8.2` or `8.3` (important!)
    - **Build Command**: `chmod +x .render-build.sh && ./.render-build.sh`
    - **Start Command**: `php artisan serve --host=0.0.0.0 --port=$PORT`
 

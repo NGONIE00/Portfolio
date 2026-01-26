@@ -21,6 +21,7 @@ This guide will help you deploy your Laravel portfolio to Render.com (free tier 
    - **Branch**: `main` (or your default branch)
    - **Root Directory**: Leave empty (root of repo)
    - **Runtime**: `PHP`
+   - **PHP Version**: Select `8.2` or `8.3` (required for Laravel 12)
    - **Build Command**: `chmod +x .render-build.sh && ./.render-build.sh`
    - **Start Command**: `php artisan serve --host=0.0.0.0 --port=$PORT`
 

@@ -31,8 +31,3 @@ services:
 
     healthCheckPath: /
     autoDeploy: true
-        value: error
-      - key: APP_URL
-        sync: false
-    healthCheckPath: /
-    autoDeploy: true

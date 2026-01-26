@@ -1,59 +1,68 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
 
-echo "🚀 Starting Laravel deployment build..."
+echo "🚀 Starting Laravel production build..."
 
-# Check PHP version
-echo "🔍 Checking PHP version..."
+# -----------------------------------
+# PHP
+# -----------------------------------
+echo "🔍 PHP version:"
 php -v
 
-# Install PHP dependencies
+# -----------------------------------
+# Composer
+# -----------------------------------
 echo "📦 Installing Composer dependencies..."
-composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+composer install \
+  --no-dev \
+  --optimize-autoloader \
+  --no-interaction \
+  --prefer-dist
 
-# Install Node.js dependencies
-echo "📦 Installing NPM dependencies..."
-npm ci --prefer-offline --no-audit
+# -----------------------------------
+# Node / Frontend (ONLY if package.json exists)
+# -----------------------------------
+if [ -f package.json ]; then
+  echo "📦 Installing NPM dependencies..."
+  npm ci --no-audit --no-fund
 
-# Build frontend assets
-echo "🏗️ Building frontend assets..."
-npm run build
-
-# Generate application key if not set
-if [ -z "$APP_KEY" ]; then
-    echo "🔑 Generating application key..."
-    php artisan key:generate --force
+  echo "🏗️ Building frontend assets..."
+  npm run build
 else
-    echo "✅ APP_KEY already set"
+  echo "ℹ️ No frontend assets to build"
 fi
 
-# Clear and cache configuration
-echo "⚙️ Optimizing Laravel..."
-php artisan config:clear || true
-php artisan route:clear || true
-php artisan view:clear || true
+# -----------------------------------
+# Laravel setup
+# -----------------------------------
+echo "🔑 Ensuring APP_KEY..."
+php artisan key:generate --force || true
+
+echo "📁 Preparing storage & cache directories..."
+mkdir -p storage/framework/{sessions,views,cache}
+mkdir -p storage/logs bootstrap/cache
+chmod -R ug+rwx storage bootstrap/cache || true
+
+# -----------------------------------
+# Database (SQLite safe default)
+# -----------------------------------
+if [ "${DB_CONNECTION:-sqlite}" = "sqlite" ]; then
+  echo "💾 Using SQLite database..."
+  mkdir -p database
+  touch database/database.sqlite
+  chmod 664 database/database.sqlite
+
+  php artisan migrate --force || echo "⚠️ Migrations skipped"
+fi
+
+# -----------------------------------
+# Laravel optimization (ORDER MATTERS)
+# -----------------------------------
+echo "⚙️ Optimizing Laravel caches..."
+
+php artisan optimize:clear || true
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
-# Create storage directories
-echo "📁 Creating storage directories..."
-mkdir -p storage/framework/{sessions,views,cache}
-mkdir -p storage/logs
-mkdir -p bootstrap/cache
-chmod -R 775 storage bootstrap/cache || true
-
-# Create database if using SQLite
-if [ "$DB_CONNECTION" != "pgsql" ] && [ "$DB_CONNECTION" != "mysql" ]; then
-    if [ ! -f database/database.sqlite ]; then
-        echo "💾 Creating SQLite database..."
-        touch database/database.sqlite
-        chmod 664 database/database.sqlite
-    fi
-    # Run migrations if database exists
-    if [ -f database/database.sqlite ]; then
-        php artisan migrate --force || echo "⚠️ Migration skipped or failed"
-    fi
-fi
-
-echo "✅ Build completed successfully!"
+echo "✅ Build completed successfully 🚀"

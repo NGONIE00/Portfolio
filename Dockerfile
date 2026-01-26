@@ -1,16 +1,26 @@
+# Base PHP CLI image
 FROM php:8.2-cli
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    git unzip curl libzip-dev libpng-dev \
-    nodejs npm \
-    && docker-php-ext-install pdo pdo_sqlite zip
-
-# Install Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Set working directory
 WORKDIR /var/www
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    curl \
+    libzip-dev \
+    libpng-dev \
+    zip \
+    sudo \
+    && docker-php-ext-install pdo pdo_sqlite zip \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g npm@latest \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Copy app files
 COPY . .

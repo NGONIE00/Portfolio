@@ -126,16 +126,18 @@ class PortfolioController extends Controller
         return back()->with('success', 'Thanks for reaching out! I\'ll get back to you soon.');
     }
     public function downloadCV()
-{
-    $filePath = storage_path('app/private/Ngonidzashe_Hunzvi_CV.pdf');
-    
-    if (!file_exists($filePath)) {
-        abort(404, 'CV file not found.');
+    {
+        $filePath = storage_path('app/private/Ngonidzashe_Hunzvi_CV.pdf');
+        
+        if (!file_exists($filePath)) {
+            // Gracefully handle missing CV file
+            return redirect()->route('portfolio.about')
+                ->with('info', 'CV is currently being updated. Please check back soon.');
+        }
+        
+        return response()->download($filePath, 'Ngonidzashe_Hunzvi_CV.pdf', [
+            'Content-Type' => 'application/pdf',
+        ]);
     }
-    
-    return response()->download($filePath, 'Ngonidzashe_Hunzvi_CV.pdf', [
-        'Content-Type' => 'application/pdf',
-    ]);
-}
     
 }

@@ -5,9 +5,11 @@ use App\Http\Controllers\PortfolioController;
 
 // Health check for Render
 Route::get('/health', function () {
-    return response()->json(['status' => 'healthy'], 200)
-        ->header('Content-Type', 'application/json');
-});
+    return response()->json([
+        'status' => 'ok',
+        'timestamp' => now()->toIso8601String(),
+    ], 200);
+})->name('health');
 
 // Portfolio routes
 Route::name('portfolio.')->group(function () {

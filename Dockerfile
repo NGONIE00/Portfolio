@@ -43,4 +43,4 @@ RUN chmod +x .render-build.sh && ./.render-build.sh
 EXPOSE 10000
 
 # Start Laravel
-CMD php -S 0.0.0.0:${PORT} -t public
+CMD ["sh", "-c", "php -S 0.0.0.0:${PORT:-10000} -t public"]

@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PortfolioController;
 
-// Health check route for Render
+// Health check for Render
 Route::get('/health', function () {
     return response('OK', 200);
 });

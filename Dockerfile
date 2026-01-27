@@ -1,6 +1,9 @@
+# Base PHP 8.2 Alpine image
 FROM php:8.2-cli-alpine
 
-# Install runtime dependencies
+WORKDIR /var/www
+
+# Install system and build dependencies
 RUN apk add --no-cache \
     git \
     unzip \
@@ -9,10 +12,7 @@ RUN apk add --no-cache \
     nodejs \
     npm \
     sqlite \
-    libzip
-
-# Install build dependencies (temporary)
-RUN apk add --no-cache --virtual .build-deps \
+    libzip \
     autoconf \
     gcc \
     g++ \
@@ -24,23 +24,20 @@ RUN apk add --no-cache --virtual .build-deps \
 # Install PHP extensions
 RUN docker-php-ext-install pdo pdo_sqlite zip
 
-# Remove build dependencies (keep image small)
-RUN apk del .build-deps
+# Remove build dependencies to reduce image size
+RUN apk del autoconf gcc g++ make pkgconfig sqlite-dev libzip-dev
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Set working directory
-WORKDIR /var/www
-
-# Copy app files
+# Copy app code
 COPY . .
 
-# Run Laravel build script
+# Run the Laravel build script
 RUN chmod +x .render-build.sh && ./.render-build.sh
 
-# Expose Render port
+# Expose Render dynamic port
 EXPOSE 10000
 
-# Start Laravel
-CMD ["sh", "-c", "echo \"Starting server on $PORT\" && php -S 0.0.0.0:${PORT} -t public"]
+# Start Laravel PHP server on Render port
+CMD ["sh", "-c", "php -S 0.0.0.0:${PORT:-10000} -t public"]

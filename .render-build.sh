@@ -27,7 +27,13 @@ mkdir -p bootstrap/cache
 chmod -R 777 storage bootstrap/cache
 
 # --------------------------
-# 4️⃣ Clear ALL caches before starting
+# 4️⃣ Generate APP_KEY
+# --------------------------
+echo "🔑 Generating APP_KEY..."
+php artisan key:generate --force
+
+# --------------------------
+# 5️⃣ Clear ALL caches before starting
 # --------------------------
 rm -rf bootstrap/cache/*.php
 rm -rf storage/framework/cache/*
@@ -35,13 +41,13 @@ rm -rf storage/framework/views/*
 rm -rf storage/framework/sessions/*
 
 # --------------------------
-# 5️⃣ Composer dependencies
+# 6️⃣ Composer dependencies
 # --------------------------
 echo "📦 Installing Composer dependencies..."
 composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
 # --------------------------
-# 6️⃣ Node.js dependencies (optional)
+# 7️⃣ Node.js dependencies (optional)
 # --------------------------
 if [ -f package.json ]; then
     echo "📦 Installing NPM dependencies..."
@@ -52,7 +58,7 @@ if [ -f package.json ]; then
 fi
 
 # --------------------------
-# 7️⃣ DO NOT cache anything - just clear
+# 8️⃣ DO NOT cache anything - just clear
 # --------------------------
 php artisan config:clear || true
 php artisan view:clear || true
@@ -60,7 +66,7 @@ php artisan route:clear || true
 php artisan cache:clear || true
 
 # --------------------------
-# 8️⃣ Final permission fix
+# 9️⃣ Final permission fix
 # --------------------------
 chmod -R 777 storage bootstrap/cache
 

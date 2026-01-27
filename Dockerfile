@@ -40,4 +40,4 @@ RUN chmod +x .render-build.sh && ./.render-build.sh
 EXPOSE 10000
 
 # Start Laravel PHP server on Render port
-CMD ["sh", "-c", "php -S 0.0.0.0:${PORT:-10000} -t public"]
+CMD php artisan serve --host=0.0.0.0 --port=${PORT:-10000}

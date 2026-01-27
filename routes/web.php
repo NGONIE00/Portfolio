@@ -5,7 +5,8 @@ use App\Http\Controllers\PortfolioController;
 
 // Health check for Render
 Route::get('/health', function () {
-    return response('OK', 200);
+    return response()->json(['status' => 'healthy'], 200)
+        ->header('Content-Type', 'application/json');
 });
 
 // Portfolio routes

@@ -1,4 +1,9 @@
 <?php
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', function () {
+    return response('OK', 200);
+});
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PortfolioController;

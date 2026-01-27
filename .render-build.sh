@@ -1,5 +1,5 @@
 #!/bin/sh
-set -ex
+set -e
 
 echo "🚀 Starting Laravel deployment build..."
 
@@ -9,7 +9,15 @@ echo "🚀 Starting Laravel deployment build..."
 php -v
 
 # --------------------------
-# 2️⃣ Ensure SQLite database exists
+# 2️⃣ Setup environment file
+# --------------------------
+if [ ! -f .env ]; then
+    echo "📝 Creating .env file from example..."
+    cp .env.example .env 2>/dev/null || echo "APP_KEY=" > .env
+fi
+
+# --------------------------
+# 3️⃣ Ensure SQLite database exists
 # --------------------------
 mkdir -p database storage/database
 if [ ! -f database/database.sqlite ]; then
@@ -19,7 +27,7 @@ if [ ! -f database/database.sqlite ]; then
 fi
 
 # --------------------------
-# 3️⃣ Ensure storage & bootstrap directories
+# 4️⃣ Ensure storage & bootstrap directories
 # --------------------------
 mkdir -p storage/framework/{sessions,views,cache,testing}
 mkdir -p storage/logs
@@ -27,18 +35,12 @@ mkdir -p bootstrap/cache
 chmod -R 777 storage bootstrap/cache
 
 # --------------------------
-# 4️⃣ Generate APP_KEY
-# --------------------------
-echo "🔑 Generating APP_KEY..."
-php artisan key:generate --force
-
-# --------------------------
 # 5️⃣ Clear ALL caches before starting
 # --------------------------
-rm -rf bootstrap/cache/*.php
-rm -rf storage/framework/cache/*
-rm -rf storage/framework/views/*
-rm -rf storage/framework/sessions/*
+rm -rf bootstrap/cache/*.php 2>/dev/null || true
+rm -rf storage/framework/cache/* 2>/dev/null || true
+rm -rf storage/framework/views/* 2>/dev/null || true
+rm -rf storage/framework/sessions/* 2>/dev/null || true
 
 # --------------------------
 # 6️⃣ Composer dependencies
@@ -47,7 +49,13 @@ echo "📦 Installing Composer dependencies..."
 composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
 # --------------------------
-# 7️⃣ Node.js dependencies (optional)
+# 7️⃣ Generate APP_KEY if needed
+# --------------------------
+echo "🔑 Checking APP_KEY..."
+php artisan key:generate --force || echo "⚠️ Using environment APP_KEY"
+
+# --------------------------
+# 8️⃣ Node.js dependencies (optional)
 # --------------------------
 if [ -f package.json ]; then
     echo "📦 Installing NPM dependencies..."
@@ -58,7 +66,7 @@ if [ -f package.json ]; then
 fi
 
 # --------------------------
-# 8️⃣ DO NOT cache anything - just clear
+# 9️⃣ Clear Laravel caches
 # --------------------------
 php artisan config:clear || true
 php artisan view:clear || true
@@ -66,7 +74,7 @@ php artisan route:clear || true
 php artisan cache:clear || true
 
 # --------------------------
-# 9️⃣ Final permission fix
+# 🔟 Final permission fix
 # --------------------------
 chmod -R 777 storage bootstrap/cache
 

@@ -17,6 +17,12 @@ services:
       - key: APP_URL
         value: https://ngonidzashe-hunzvi.onrender.com
       - key: APP_KEY
+        sync: false  # Change this if you want to manually set it
+      - key: DB_CONNECTION
+        value: sqlite
+
+    healthCheckPath: /health
+    autoDeploy: true
         generateValue: true
       - key: DB_CONNECTION
         value: sqlite

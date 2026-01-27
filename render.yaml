@@ -28,5 +28,6 @@ services:
       - key: DB_CONNECTION
         value: sqlite
 
-    healthCheckPath: /
+    # ✅ Health check updated to the dedicated health endpoint
+    healthCheckPath: /health
     autoDeploy: true

@@ -10,8 +10,18 @@ chmod -R 777 storage bootstrap/cache
 touch database/database.sqlite
 chmod 664 database/database.sqlite
 
-# Install dependencies
+# Install PHP dependencies
+echo "📦 Installing Composer dependencies..."
 composer install --no-dev --optimize-autoloader --no-interaction
+
+# Install Node dependencies and build assets
+if [ -f package.json ]; then
+    echo "📦 Installing NPM dependencies..."
+    npm ci --prefer-offline --no-audit
+    
+    echo "🏗️ Building frontend assets with Vite..."
+    npm run build
+fi
 
 # Run migrations (creates sessions table)
 php artisan migrate --force || echo "⚠️ Migrations skipped"
@@ -21,7 +31,7 @@ php artisan config:clear
 php artisan view:clear
 php artisan route:clear
 
-# Fix permissions again
+# Fix permissions
 chmod -R 777 storage bootstrap/cache
 
 echo "✅ Build complete!"

@@ -12,7 +12,8 @@ export default defineConfig(({ mode }) => ({
   build: {
     manifest: true,
     outDir: path.resolve(__dirname, 'public/build'),
-    emptyOutDir: true, // clear old builds
+    emptyOutDir: true,      // clears old builds
+    assetsDir: '',          // ensures manifest.json is at root of build folder
     rollupOptions: {
       output: {
         manualChunks: undefined,

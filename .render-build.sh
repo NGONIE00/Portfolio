@@ -8,9 +8,13 @@ chmod -R 777 storage bootstrap/cache
 
 # Create database
 touch database/database.sqlite
+chmod 664 database/database.sqlite
 
 # Install dependencies
 composer install --no-dev --optimize-autoloader --no-interaction
+
+# Run migrations (creates sessions table)
+php artisan migrate --force || echo "⚠️ Migrations skipped"
 
 # Clear caches
 php artisan config:clear

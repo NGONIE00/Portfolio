@@ -1,5 +1,5 @@
 #!/bin/sh
-set -ex
+set -e
 
 echo "🚀 Starting production build..."
 

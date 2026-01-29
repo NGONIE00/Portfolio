@@ -5,7 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name', 'Ngonidzashe Hunzvi') }}</title>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    {{-- Vite assets with CDN fallback --}}
+    @production
+        @if(file_exists(public_path('build/manifest.json')))
+            @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @else
+            {{-- CDN Tailwind Fallback when Vite build is missing --}}
+            <script src="https://cdn.tailwindcss.com"></script>
+            <script>
+                tailwind.config = {
+                    darkMode: 'class',
+                    theme: {
+                        extend: {
+                            colors: {
+                                primary: {
+                                    50: '#eff6ff',
+                                    100: '#dbeafe',
+                                    200: '#bfdbfe',
+                                    300: '#93c5fd',
+                                    400: '#60a5fa',
+                                    500: '#3b82f6',
+                                    600: '#2563eb',
+                                    700: '#1d4ed8',
+                                    800: '#1e40af',
+                                    900: '#1e3a8a',
+                                },
+                            },
+                            fontFamily: {
+                                sans: ['Inter', 'system-ui', 'sans-serif'],
+                                mono: ['JetBrains Mono', 'monospace'],
+                            },
+                        }
+                    }
+                }
+            </script>
+            <style>
+                /* Basic component styles for CDN fallback */
+                .nav-link {
+                    @apply px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-200 font-medium;
+                }
+                .section-container {
+                    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+                }
+                .footer-text {
+                    @apply text-sm text-gray-500 dark:text-gray-400 text-center;
+                }
+                /* Dark mode icon animations */
+                .sun-icon {
+                    transform: scale(1);
+                    opacity: 1;
+                    transition: transform 0.3s ease, opacity 0.3s ease;
+                }
+                .moon-icon {
+                    transform: scale(0);
+                    opacity: 0;
+                    transition: transform 0.3s ease, opacity 0.3s ease;
+                }
+                html.dark .sun-icon {
+                    transform: scale(0);
+                    opacity: 0;
+                }
+                html.dark .moon-icon {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+            </style>
+        @endif
+    @else
+        {{-- Development mode: always use Vite --}}
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @endproduction
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -132,7 +201,7 @@
 
                     <!-- Email -->
                     <a href="mailto:ngoniehunzvie@gmail.com" 
-                       class="text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-all duration-300 hover:scale-110"
+                       class="text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-all duration-300 hover:scale-110" 
                        aria-label="Send Email">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
@@ -153,5 +222,27 @@
             </div>
         </div>
     </footer>
+
+    <!-- Dark Mode Toggle Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            
+            if (darkModeToggle) {
+                darkModeToggle.addEventListener('click', function() {
+                    const html = document.documentElement;
+                    const isDark = html.classList.contains('dark');
+                    
+                    if (isDark) {
+                        html.classList.remove('dark');
+                        localStorage.setItem('theme', 'light');
+                    } else {
+                        html.classList.add('dark');
+                        localStorage.setItem('theme', 'dark');
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>

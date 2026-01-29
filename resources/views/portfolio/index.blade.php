@@ -24,10 +24,13 @@
 
             <!-- Left Column -->
             <div class="text-gray-800 dark:text-gray-300 space-y-6 md:space-y-8">
+
+                <!-- Bio -->
                 <p class="text-sm sm:text-base md:text-lg leading-relaxed text-gray-600 dark:text-gray-400 max-w-2xl">
                     {{ $data['bio'] }}
                 </p>
 
+                <!-- CTA -->
                 <div>
                     <a href="{{ route('portfolio.contact') }}" 
                        aria-label="Contact {{ $data['name'] }}"
@@ -66,12 +69,8 @@
                     </div>
                 </div>
 
-                <!-- ===== Tech Logos (Desktop height collapses) ===== -->
-                <div class="relative w-full 
-                            min-h-[16rem] sm:min-h-[20rem] 
-                            md:min-h-0 lg:min-h-0 
-                            lg:pb-4
-                            overflow-hidden">
+                <!-- ===== Blended Tech Logos (No Card) ===== -->
+                <div class="relative w-full min-h-[16rem] sm:min-h-[20rem] md:min-h-[24rem] overflow-hidden">
                     @foreach ($tech_logo as $icon)
                         <div class="floating-logo w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16
                                     rounded-full shadow-md hover:shadow-lg 
@@ -94,9 +93,7 @@
                     @endforeach
                 </div>
 
-                <p class="text-xs sm:text-sm text-center text-gray-500 dark:text-gray-500 lg:hidden">
-                    💡 Tap on a logo to see the technology name
-                </p>
+                
             </div>
 
         </div>

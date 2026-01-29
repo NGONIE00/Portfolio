@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name', 'Ngonidzashe Hunzvi') }}</title>
 
-    {{-- Vite assets with CDN fallback --}}
+    {{-- Vite CSS with CDN fallback --}}
     @production
         @if(file_exists(public_path('build/manifest.json')))
+            {{-- Vite built successfully - use compiled assets --}}
             @vite(['resources/css/app.css', 'resources/js/app.js'])
         @else
-            {{-- CDN Tailwind Fallback when Vite build is missing --}}
+            {{-- Vite build missing - use CDN Tailwind + inline JS --}}
             <script src="https://cdn.tailwindcss.com"></script>
             <script>
                 tailwind.config = {
@@ -35,22 +36,61 @@
                                 sans: ['Inter', 'system-ui', 'sans-serif'],
                                 mono: ['JetBrains Mono', 'monospace'],
                             },
+                            animation: {
+                                'typewriter': 'typewriter 3s steps(40, end) forwards',
+                                'float': 'float 6s ease-in-out infinite',
+                                'fade-in': 'fadeIn 0.5s ease-in-out',
+                            },
+                            keyframes: {
+                                typewriter: {
+                                    from: { width: '0' },
+                                    to: { width: '100%' }
+                                },
+                                float: {
+                                    '0%, 100%': { transform: 'translateY(0px)' },
+                                    '50%': { transform: 'translateY(-20px)' }
+                                },
+                                fadeIn: {
+                                    '0%': { opacity: '0' },
+                                    '100%': { opacity: '1' }
+                                }
+                            }
                         }
                     }
                 }
             </script>
             <style>
-                /* Basic component styles for CDN fallback */
+                /* Component styles for CDN fallback */
                 .nav-link {
-                    @apply px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-200 font-medium;
+                    padding: 0.5rem 0.75rem;
+                    color: #374151;
+                    transition: color 0.2s;
+                    font-weight: 500;
+                }
+                .dark .nav-link {
+                    color: #d1d5db;
+                }
+                .nav-link:hover {
+                    color: #111827;
+                }
+                .dark .nav-link:hover {
+                    color: #f9fafb;
                 }
                 .section-container {
-                    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+                    max-width: 80rem;
+                    margin-left: auto;
+                    margin-right: auto;
+                    padding-left: 1rem;
+                    padding-right: 1rem;
                 }
                 .footer-text {
-                    @apply text-sm text-gray-500 dark:text-gray-400 text-center;
+                    font-size: 0.875rem;
+                    color: #6b7280;
+                    text-align: center;
                 }
-                /* Dark mode icon animations */
+                .dark .footer-text {
+                    color: #9ca3af;
+                }
                 .sun-icon {
                     transform: scale(1);
                     opacity: 1;
@@ -69,6 +109,67 @@
                     transform: scale(1);
                     opacity: 1;
                 }
+                /* Floating logos */
+                .floating-logo {
+                    transition: all 0.3s ease;
+                    cursor: pointer;
+                    user-select: none;
+                }
+                .floating-logo:hover {
+                    transform: scale(1.1) translateY(-4px) !important;
+                }
+                /* Terminal text */
+                .terminal-text {
+                    font-family: 'JetBrains Mono', monospace;
+                    font-size: 0.875rem;
+                    color: #4b5563;
+                }
+                .dark .terminal-text {
+                    color: #9ca3af;
+                }
+                .terminal-cursor {
+                    color: #2563eb;
+                    animation: blink 1s infinite;
+                }
+                .dark .terminal-cursor {
+                    color: #60a5fa;
+                }
+                @keyframes blink {
+                    0%, 50% { opacity: 1; }
+                    51%, 100% { opacity: 0; }
+                }
+                .terminal-highlight {
+                    color: #1f2937;
+                    font-weight: 600;
+                }
+                .dark .terminal-highlight {
+                    color: #e5e7eb;
+                }
+                /* Button styles */
+                .btn-secondary {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 0.75rem 1.5rem;
+                    border: 2px solid #9ca3af;
+                    color: #374151;
+                    font-weight: 600;
+                    border-radius: 9999px;
+                    transition: all 0.3s;
+                }
+                .dark .btn-secondary {
+                    border-color: #4b5563;
+                    color: #d1d5db;
+                }
+                .btn-secondary:hover {
+                    border-color: #2563eb;
+                    color: #2563eb;
+                    transform: scale(1.05);
+                }
+                .dark .btn-secondary:hover {
+                    border-color: #60a5fa;
+                    color: #60a5fa;
+                }
             </style>
         @endif
     @else
@@ -86,18 +187,15 @@
             const savedTheme = localStorage.getItem('theme');
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             
-            // Explicitly check for saved theme, otherwise use system preference
             let isDark;
             if (savedTheme === 'dark') {
                 isDark = true;
             } else if (savedTheme === 'light') {
                 isDark = false;
             } else {
-                // No saved preference, use system preference
                 isDark = prefersDark;
             }
             
-            // Apply theme immediately
             if (isDark) {
                 document.documentElement.classList.add('dark');
             } else {
@@ -223,12 +321,21 @@
         </div>
     </footer>
 
-    <!-- Dark Mode Toggle Script -->
+    {{-- Load JavaScript from app.js inline when using CDN Tailwind --}}
+    @production
+        @if(!file_exists(public_path('build/manifest.json')))
+            <script>
+                {!! file_get_contents(resource_path('js/app.js')) !!}
+            </script>
+        @endif
+    @endproduction
+
+    <!-- Dark Mode Toggle Script (fallback if app.js doesn't load) -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const darkModeToggle = document.getElementById('dark-mode-toggle');
             
-            if (darkModeToggle) {
+            if (darkModeToggle && !window.portfolioApp) {
                 darkModeToggle.addEventListener('click', function() {
                     const html = document.documentElement;
                     const isDark = html.classList.contains('dark');

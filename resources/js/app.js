@@ -51,7 +51,6 @@ class DarkModeToggle {
     updateTheme(isDark) {
         this.html.classList.toggle('dark', isDark);
         if (!this.sunIcon || !this.moonIcon) return;
-
         this.sunIcon.style.opacity = isDark ? '0' : '1';
         this.moonIcon.style.opacity = isDark ? '1' : '0';
     }
@@ -102,50 +101,77 @@ class TerminalTyping {
     }
 }
 
-// === Floating Tech Logos (NO OVERLAP) ===
+// === Floating Logos (Non-Overlapping + Animated) ===
 class FloatingLogos {
     constructor() {
         this.container = Utils.select('#logo-container');
-        this.logos = Utils.selectAll('.floating-logo');
+        this.logos = Array.from(Utils.selectAll('.floating-logo'));
+        this.placed = [];
         if (!this.container || !this.logos.length) return;
 
-        this.positions = [];
         this.init();
     }
 
     init() {
-        this.placeAll();
-        window.addEventListener('resize', Utils.debounce(() => this.placeAll(), 300));
+        this.logos.forEach(logo => {
+            logo.style.opacity = 0;
+            this.placeLogo(logo);
+            this.animateLogoCycle(logo);
+        });
+
+        window.addEventListener('resize', Utils.debounce(() => {
+            this.logos.forEach(logo => this.placeLogo(logo));
+        }, 300));
     }
 
-    placeAll() {
-        this.positions = [];
+    placeLogo(logo) {
         const cw = this.container.clientWidth;
         const ch = this.container.clientHeight;
+        const size = logo.offsetWidth;
+        let x, y, safe, tries = 0;
 
-        this.logos.forEach(logo => {
-            const size = logo.offsetWidth;
-            let x, y, safe, tries = 0;
+        do {
+            safe = true;
+            x = Math.random() * (cw - size);
+            y = Math.random() * (ch - size);
 
-            do {
-                safe = true;
-                x = Math.random() * (cw - size);
-                y = Math.random() * (ch - size);
-
-                for (const p of this.positions) {
-                    const dx = p.x - x;
-                    const dy = p.y - y;
-                    if (Math.sqrt(dx * dx + dy * dy) < size * 1.3) {
-                        safe = false;
-                        break;
-                    }
+            for (const p of this.placed) {
+                const dx = p.x - x;
+                const dy = p.y - y;
+                if (Math.sqrt(dx*dx + dy*dy) < size * 1.3) {
+                    safe = false;
+                    break;
                 }
-                tries++;
-            } while (!safe && tries < 80);
+            }
 
-            this.positions.push({ x, y });
-            logo.style.transform = `translate(${x}px, ${y}px)`;
-        });
+            tries++;
+        } while (!safe && tries < 80);
+
+        logo.dataset.x = x;
+        logo.dataset.y = y;
+        logo.style.transform = `translate(${x}px, ${y}px)`;
+        this.placed.push({ x, y, logo });
+    }
+
+    animateLogoCycle(logo) {
+        const showDuration = 2000 + Math.random() * 2000;
+        const hideDuration = 1000 + Math.random() * 1000;
+        const initialDelay = Math.random() * 2000;
+
+        const cycle = () => {
+            // Show
+            logo.style.transition = `opacity 0.5s ease, transform 0.5s ease`;
+            this.placeLogo(logo);
+            logo.style.opacity = 1;
+
+            setTimeout(() => {
+                // Hide
+                logo.style.opacity = 0;
+                setTimeout(cycle, hideDuration);
+            }, showDuration);
+        };
+
+        setTimeout(cycle, initialDelay);
     }
 }
 

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<section class="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300 px-4 py-8">
+<section class="bg-white dark:bg-gray-900 transition-colors duration-300 px-4 py-8">
     <div class="w-full max-w-7xl mx-auto">
 
         <!-- ===== Page Header / Name Section ===== -->
@@ -22,7 +22,7 @@
         <!-- ===== Main Grid ===== -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10 lg:gap-12 items-start">
 
-            <!-- Left Column -->
+            <!-- ===== Left Column ===== -->
             <div class="text-gray-800 dark:text-gray-300 space-y-6 md:space-y-8">
 
                 <!-- Bio -->
@@ -32,7 +32,7 @@
 
                 <!-- CTA -->
                 <div>
-                    <a href="{{ route('portfolio.contact') }}" 
+                    <a href="{{ route('portfolio.contact') }}"
                        aria-label="Contact {{ $data['name'] }}"
                        class="inline-flex items-center justify-center px-6 py-3 md:px-8 md:py-4 
                               border-2 border-gray-400 dark:border-gray-600 
@@ -52,7 +52,7 @@
                 </div>
             </div>
 
-            <!-- Right Column -->
+            <!-- ===== Right Column ===== -->
             <div class="w-full space-y-4 md:space-y-6">
 
                 <!-- Tech Header -->
@@ -60,8 +60,9 @@
                     <h3 class="text-base sm:text-lg md:text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
                         Technologies I work with
                     </h3>
+
                     <div class="flex items-start font-mono text-sm md:text-base text-gray-600 dark:text-gray-400">
-                        <span class="text-blue-600 dark:text-blue-400 mr-2">></span>
+                        <span class="text-blue-600 dark:text-blue-400 mr-2">&gt;</span>
                         <div class="flex items-center min-h-[1.5rem]">
                             <span id="terminal-output-text" class="inline-block"></span>
                             <span class="terminal-cursor text-blue-600 dark:text-blue-400 ml-0.5">|</span>
@@ -69,33 +70,37 @@
                     </div>
                 </div>
 
-                <!-- ===== Blended Tech Logos (No Card) ===== -->
-                <div class="relative w-full min-h-[16rem] sm:min-h-[20rem] md:min-h-[24rem] overflow-hidden">
+                <!-- ===== Floating Tech Logos ===== -->
+                <div class="relative w-full
+                            min-h-[16rem] sm:min-h-[20rem]
+                            md:h-[22rem] lg:h-[24rem]
+                            overflow-hidden">
+
                     @foreach ($tech_logo as $icon)
-                        <div class="floating-logo w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16
-                                    rounded-full shadow-md hover:shadow-lg 
-                                    flex items-center justify-center 
-                                    bg-white dark:bg-gray-800 
-                                    hover:bg-gray-50 dark:hover:bg-gray-700 
+                        <div class="floating-logo
+                                    w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16
+                                    rounded-full shadow-md hover:shadow-lg
+                                    flex items-center justify-center
+                                    bg-white dark:bg-gray-800
+                                    hover:bg-gray-50 dark:hover:bg-gray-700
                                     border border-gray-200 dark:border-gray-600
-                                    transition-all duration-500 opacity-0 cursor-pointer
+                                    transition-all duration-500 cursor-pointer
                                     active:scale-95"
-                             style="position: absolute;"
+                             style="position:absolute;"
                              data-tech="{{ pathinfo($icon['file'], PATHINFO_FILENAME) }}"
                              role="button"
                              tabindex="0"
                              aria-label="{{ pathinfo($icon['file'], PATHINFO_FILENAME) }} technology">
-                            <img src="{{ asset('tech_logo/' . $icon['file']) }}" 
-                                 alt="{{ pathinfo($icon['file'], PATHINFO_FILENAME) }}" 
+
+                            <img src="{{ asset('tech_logo/' . $icon['file']) }}"
+                                 alt="{{ pathinfo($icon['file'], PATHINFO_FILENAME) }}"
                                  class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 object-contain pointer-events-none"
                                  loading="lazy">
                         </div>
                     @endforeach
                 </div>
 
-                
             </div>
-
         </div>
     </div>
 </section>
@@ -107,21 +112,36 @@
     50% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(59,130,246,.1); }
     100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(59,130,246,0); }
 }
-.floating-logo.clicked { animation: clickPulse .3s ease-out; }
+.floating-logo.clicked {
+    animation: clickPulse .3s ease-out;
+}
 
 @keyframes blink {
-    0%,50% { opacity: 1; }
-    51%,100% { opacity: 0; }
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
 }
-.terminal-cursor { animation: blink 1s infinite; }
+.terminal-cursor {
+    animation: blink 1s infinite;
+}
 
+/* Touch devices */
 @media (hover: none) and (pointer: coarse) {
-    .floating-logo { min-width: 3rem; min-height: 3rem; }
+    .floating-logo {
+        min-width: 3rem;
+        min-height: 3rem;
+    }
 }
 
+/* Very small phones */
 @media (max-width: 360px) {
-    .floating-logo { width: 2.5rem; height: 2.5rem; }
-    .floating-logo img { width: 1.75rem; height: 1.75rem; }
+    .floating-logo {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+    .floating-logo img {
+        width: 1.75rem;
+        height: 1.75rem;
+    }
 }
 </style>
 @endsection

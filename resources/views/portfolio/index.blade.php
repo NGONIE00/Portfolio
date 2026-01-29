@@ -93,10 +93,7 @@
                     @endforeach
                 </div>
 
-                <!-- Mobile Hint -->
-                <p class="text-xs sm:text-sm text-center text-gray-500 dark:text-gray-500 lg:hidden">
-                    💡 Tap on a logo to see the technology name
-                </p>
+                
             </div>
 
         </div>

@@ -40,6 +40,7 @@
                                 'typewriter': 'typewriter 3s steps(40, end) forwards',
                                 'float': 'float 6s ease-in-out infinite',
                                 'fade-in': 'fadeIn 0.5s ease-in-out',
+                                'slide-down': 'slideDown 0.3s ease-out',
                             },
                             keyframes: {
                                 typewriter: {
@@ -53,6 +54,10 @@
                                 fadeIn: {
                                     '0%': { opacity: '0' },
                                     '100%': { opacity: '1' }
+                                },
+                                slideDown: {
+                                    '0%': { transform: 'translateY(-10px)', opacity: '0' },
+                                    '100%': { transform: 'translateY(0)', opacity: '1' }
                                 }
                             }
                         }
@@ -82,6 +87,18 @@
                     margin-right: auto;
                     padding-left: 1rem;
                     padding-right: 1rem;
+                }
+                @media (min-width: 640px) {
+                    .section-container {
+                        padding-left: 1.5rem;
+                        padding-right: 1.5rem;
+                    }
+                }
+                @media (min-width: 1024px) {
+                    .section-container {
+                        padding-left: 2rem;
+                        padding-right: 2rem;
+                    }
                 }
                 .footer-text {
                     font-size: 0.875rem;
@@ -170,6 +187,28 @@
                     border-color: #60a5fa;
                     color: #60a5fa;
                 }
+                /* Mobile menu animation */
+                .mobile-menu {
+                    max-height: 0;
+                    overflow: hidden;
+                    transition: max-height 0.3s ease-out;
+                }
+                .mobile-menu.open {
+                    max-height: 400px;
+                }
+                /* Hamburger menu animation */
+                .hamburger-line {
+                    transition: all 0.3s ease;
+                }
+                .hamburger.open .hamburger-line:nth-child(1) {
+                    transform: rotate(45deg) translate(5px, 5px);
+                }
+                .hamburger.open .hamburger-line:nth-child(2) {
+                    opacity: 0;
+                }
+                .hamburger.open .hamburger-line:nth-child(3) {
+                    transform: rotate(-45deg) translate(7px, -6px);
+                }
             </style>
         @endif
     @else
@@ -208,66 +247,114 @@
 
     <!-- Header -->
     <header class="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors duration-300">
-        <div class="section-container h-20 flex items-center justify-between">
-            @php
-                $currentRoute = request()->route()->getName();
-                $pageNames = [
-                    'portfolio.index' => 'Home',
-                    'portfolio.about' => 'About',
-                    'portfolio.projects' => 'Projects',
-                    'portfolio.contact' => 'Contact'
-                ];
-                $currentPageName = $pageNames[$currentRoute] ?? 'Ngonidzashe Hunzvi';
-            @endphp
+        <div class="section-container">
+            <div class="flex items-center justify-between h-16 md:h-20">
+                @php
+                    $currentRoute = request()->route()->getName();
+                    $pageNames = [
+                        'portfolio.index' => 'Home',
+                        'portfolio.about' => 'About',
+                        'portfolio.projects' => 'Projects',
+                        'portfolio.contact' => 'Contact'
+                    ];
+                    $currentPageName = $pageNames[$currentRoute] ?? 'Ngonidzashe Hunzvi';
+                @endphp
 
-            <span class="text-2xl font-bold text-gray-900 dark:text-gray-100 transition-colors duration-300">
-                {{ $currentPageName }}
-            </span>
+                <!-- Logo/Page Title -->
+                <span class="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100 transition-colors duration-300">
+                    {{ $currentPageName }}
+                </span>
 
-            <!-- Desktop Navigation -->
-            <nav class="hidden md:flex items-center space-x-4">
-                @if($currentRoute !== 'portfolio.index')
-                    <a href="{{ route('portfolio.index') }}" class="nav-link">Home</a>
-                @endif
-                @if($currentRoute !== 'portfolio.about')
-                    <a href="{{ route('portfolio.about') }}" class="nav-link">About</a>
-                @endif
-                @if($currentRoute !== 'portfolio.projects')
-                    <a href="{{ route('portfolio.projects') }}" class="nav-link">Projects</a>
-                @endif
-                @if($currentRoute !== 'portfolio.contact')
-                    <a href="{{ route('portfolio.contact') }}" class="nav-link">Contact</a>
-                @endif
-            </nav>
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center space-x-4">
+                    @if($currentRoute !== 'portfolio.index')
+                        <a href="{{ route('portfolio.index') }}" class="nav-link">Home</a>
+                    @endif
+                    @if($currentRoute !== 'portfolio.about')
+                        <a href="{{ route('portfolio.about') }}" class="nav-link">About</a>
+                    @endif
+                    @if($currentRoute !== 'portfolio.projects')
+                        <a href="{{ route('portfolio.projects') }}" class="nav-link">Projects</a>
+                    @endif
+                    @if($currentRoute !== 'portfolio.contact')
+                        <a href="{{ route('portfolio.contact') }}" class="nav-link">Contact</a>
+                    @endif
+                </nav>
 
-            <div class="flex items-center space-x-4">
-                <!-- Dark Mode Toggle Button -->
-                <button id="dark-mode-toggle" 
-                        aria-label="Toggle dark mode" 
-                        class="relative inline-flex items-center justify-center h-10 w-10 rounded-full 
-                               bg-gray-200 dark:bg-gray-700 transition-all duration-300 
-                               hover:bg-gray-300 dark:hover:bg-gray-600 
-                               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 
-                               hover:scale-105">
-                    <!-- Sun Icon -->
-                    <svg class="h-5 w-5 text-yellow-500 transition-all duration-300 transform absolute sun-icon" 
-                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
-                    </svg>
-                    <!-- Moon Icon -->
-                    <svg class="h-5 w-5 text-blue-400 transition-all duration-300 transform absolute moon-icon" 
-                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
-                    </svg>
-                </button>
+                <!-- Right side buttons -->
+                <div class="flex items-center space-x-2 md:space-x-4">
+                    <!-- Dark Mode Toggle Button -->
+                    <button id="dark-mode-toggle" 
+                            aria-label="Toggle dark mode" 
+                            class="relative inline-flex items-center justify-center h-10 w-10 rounded-full 
+                                   bg-gray-200 dark:bg-gray-700 transition-all duration-300 
+                                   hover:bg-gray-300 dark:hover:bg-gray-600 
+                                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 
+                                   hover:scale-105">
+                        <!-- Sun Icon -->
+                        <svg class="h-5 w-5 text-yellow-500 transition-all duration-300 transform absolute sun-icon" 
+                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                        <!-- Moon Icon -->
+                        <svg class="h-5 w-5 text-blue-400 transition-all duration-300 transform absolute moon-icon" 
+                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                        </svg>
+                    </button>
+
+                    <!-- Mobile Menu Toggle -->
+                    <button id="mobile-menu-toggle" 
+                            aria-label="Toggle mobile menu"
+                            class="md:hidden relative inline-flex items-center justify-center h-10 w-10 rounded-lg
+                                   bg-gray-200 dark:bg-gray-700 transition-all duration-300
+                                   hover:bg-gray-300 dark:hover:bg-gray-600
+                                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        <div class="hamburger w-6 h-5 flex flex-col justify-between">
+                            <span class="hamburger-line block h-0.5 w-full bg-gray-600 dark:bg-gray-300 rounded"></span>
+                            <span class="hamburger-line block h-0.5 w-full bg-gray-600 dark:bg-gray-300 rounded"></span>
+                            <span class="hamburger-line block h-0.5 w-full bg-gray-600 dark:bg-gray-300 rounded"></span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Navigation Menu -->
+            <div id="mobile-menu" class="mobile-menu md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+                <nav class="py-4 space-y-2">
+                    @if($currentRoute !== 'portfolio.index')
+                        <a href="{{ route('portfolio.index') }}" 
+                           class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200">
+                            Home
+                        </a>
+                    @endif
+                    @if($currentRoute !== 'portfolio.about')
+                        <a href="{{ route('portfolio.about') }}" 
+                           class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200">
+                            About
+                        </a>
+                    @endif
+                    @if($currentRoute !== 'portfolio.projects')
+                        <a href="{{ route('portfolio.projects') }}" 
+                           class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200">
+                            Projects
+                        </a>
+                    @endif
+                    @if($currentRoute !== 'portfolio.contact')
+                        <a href="{{ route('portfolio.contact') }}" 
+                           class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200">
+                            Contact
+                        </a>
+                    @endif
+                </nav>
             </div>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="pt-20">
+    <main class="pt-16 md:pt-20">
         @yield('content')
     </main>
     
@@ -330,11 +417,39 @@
         @endif
     @endproduction
 
-    <!-- Dark Mode Toggle Script (fallback if app.js doesn't load) -->
+    <!-- Mobile Menu Toggle Script -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const hamburger = document.querySelector('.hamburger');
             
+            if (mobileMenuToggle && mobileMenu) {
+                mobileMenuToggle.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('open');
+                    hamburger.classList.toggle('open');
+                });
+
+                // Close mobile menu when clicking a link
+                const mobileLinks = mobileMenu.querySelectorAll('a');
+                mobileLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        mobileMenu.classList.remove('open');
+                        hamburger.classList.remove('open');
+                    });
+                });
+
+                // Close mobile menu when clicking outside
+                document.addEventListener('click', function(event) {
+                    if (!mobileMenuToggle.contains(event.target) && !mobileMenu.contains(event.target)) {
+                        mobileMenu.classList.remove('open');
+                        hamburger.classList.remove('open');
+                    }
+                });
+            }
+
+            // Dark mode toggle (fallback if app.js doesn't load)
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
             if (darkModeToggle && !window.portfolioApp) {
                 darkModeToggle.addEventListener('click', function() {
                     const html = document.documentElement;

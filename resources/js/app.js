@@ -158,8 +158,7 @@ this.config = {
         'tailwindcss': 'Tailwind CSS',  
         'bootstrap': 'Bootstrap',  
         'git': 'Git',  
-        'docker': 'Docker',  
-        'javascript': 'JavaScript',  
+        'docker': 'Docker',   
         'jenkins': 'Jenkins',  
         'livewire': 'Livewire'  
     };  

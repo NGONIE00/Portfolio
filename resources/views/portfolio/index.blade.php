@@ -1,7 +1,7 @@
 @extends('layouts.app')  
   
 @section('content')  
-<section class="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300 px-4 py-8">  
+<section class="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300 px-4 py-8 lg:flex lg:items-center">  
     <div class="w-full max-w-7xl mx-auto">  
   
         <!-- ===== Page Header / Name Section ===== -->  
@@ -69,8 +69,8 @@
                     </div>  
                 </div>  
   
-                <!-- ===== Blended Tech Logos (No Card) ===== -->  
-                <div class="relative w-full min-h-[16rem] sm:min-h-[20rem] md:min-h-[24rem] overflow-hidden">  
+                <!-- ===== Floating Tech Logos Container - Mobile uses min-height, Desktop uses fixed height ===== -->  
+                <div class="relative w-full min-h-[16rem] sm:min-h-[20rem] md:min-h-[24rem] lg:h-[400px] overflow-hidden">  
                     @foreach ($tech_logo as $icon)  
                         <div class="floating-logo w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16  
                                     rounded-full shadow-md hover:shadow-lg   
@@ -93,7 +93,6 @@
                     @endforeach  
                 </div>  
   
-                  
             </div>  
   
         </div>  

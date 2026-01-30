@@ -27,7 +27,6 @@ class PortfolioController extends Controller
             ['file' => 'git.svg', 'bottom' => 'bottom-1/5', 'left' => 'left-1/3', 'delay' => 'delay-[12s]'],
             ['file' => 'kubernetes.svg', 'top' => 'top-1/5', 'right' => 'right-1/4', 'delay' => 'delay-[13s]'],
             ['file' => 'docker.svg', 'bottom' => 'bottom-1/2', 'right' => 'right-1/5', 'delay' => 'delay-[14s]'],
-            ['file' => 'javaScript.svg', 'top' => 'top-1/2', 'left' => 'left-1/6', 'delay' => 'delay-[15s]'],
             ['file' => 'jenkins.svg', 'bottom' => 'bottom-1/6', 'right' => 'right-1/6', 'delay' => 'delay-[16s]'],
             ['file' => 'livewire.svg', 'top' => 'top-1/6', 'left' => 'left-1/6', 'delay' => 'delay-[17s]'],
         ];

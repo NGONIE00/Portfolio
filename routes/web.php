@@ -12,6 +12,12 @@ Route::get('/health', function () {
 })->name('health');
 
 // Portfolio routes
+
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/messages', [App\Http\Controllers\AdminController::class, 'messages'])->name('messages');
+    Route::get('/messages/{id}', [App\Http\Controllers\AdminController::class, 'viewMessage'])->name('message.view');
+    Route::delete('/messages/{id}', [App\Http\Controllers\AdminController::class, 'deleteMessage'])->name('message.delete');
+});
 Route::name('portfolio.')->group(function () {
     Route::get('/', [PortfolioController::class, 'index'])->name('index');
     Route::get('/about', [PortfolioController::class, 'about'])->name('about');

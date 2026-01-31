@@ -13,11 +13,20 @@ Route::get('/health', function () {
 
 // Portfolio routes
 
+// Admin Login Routes (NO AUTH NEEDED)
 Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/messages', [App\Http\Controllers\AdminController::class, 'messages'])->name('messages');
-    Route::get('/messages/{id}', [App\Http\Controllers\AdminController::class, 'viewMessage'])->name('message.view');
-    Route::delete('/messages/{id}', [App\Http\Controllers\AdminController::class, 'deleteMessage'])->name('message.delete');
+    Route::get('/login', [AdminController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AdminController::class, 'login'])->name('login.post');
 });
+
+// Admin Protected Routes (NEEDS PASSWORD)
+Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function () {
+    Route::get('/messages', [AdminController::class, 'messages'])->name('messages');
+    Route::get('/messages/{id}', [AdminController::class, 'viewMessage'])->name('message.view');
+    Route::delete('/messages/{id}', [AdminController::class, 'deleteMessage'])->name('message.delete');
+    Route::get('/logout', [AdminController::class, 'logout'])->name('logout');
+});
+
 Route::name('portfolio.')->group(function () {
     Route::get('/', [PortfolioController::class, 'index'])->name('index');
     Route::get('/about', [PortfolioController::class, 'about'])->name('about');

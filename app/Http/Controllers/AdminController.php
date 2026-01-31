@@ -3,9 +3,37 @@
 namespace App\Http\Controllers;
 
 use App\Models\ContactMessage;
+use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
+    // Show login form
+    public function showLogin()
+    {
+        return view('admin.login');
+    }
+
+    // Handle login
+    public function login(Request $request)
+    {
+        $password = $request->input('password');
+        
+        // Check password (change 'your-secret-password' to your actual password)
+        if ($password === 'your-secret-password') {
+            session(['admin_logged_in' => true]);
+            return redirect()->route('admin.messages');
+        }
+
+        return back()->withErrors(['password' => 'Invalid password']);
+    }
+
+    // Logout
+    public function logout()
+    {
+        session()->forget('admin_logged_in');
+        return redirect()->route('portfolio.index');
+    }
+
     // Show all messages
     public function messages()
     {

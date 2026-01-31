@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\ContactMessage
+
 
 class PortfolioController extends Controller
 {
@@ -50,15 +52,42 @@ class PortfolioController extends Controller
     }
 
     public function sendMessage(Request $request)
-    {
-        // Honeypot spam protection - if this field is filled, it's a bot
-        if ($request->filled('website')) {
-            \Log::warning('Contact form honeypot triggered', [
-                'ip' => $request->ip(),
-                'user_agent' => $request->userAgent(),
-            ]);
-            return back()->with('success', 'Thanks for reaching out! I\'ll get back to you soon.');
-        }
+{
+    // Honeypot spam protection
+    if ($request->filled('website')) {
+        \Log::warning('Contact form honeypot triggered', [
+            'ip' => $request->ip(),
+        ]);
+        return back()->with('success', 'Thanks for reaching out! I\'ll get back to you soon.');
+    }
+
+    // Validate
+    $validated = $request->validate([
+        'name' => ['required', 'string', 'max:100', 'min:2', 'regex:/^[a-zA-Z\s\-\'\.]+$/u'],
+        'email' => ['required', 'email:rfc,dns', 'max:255'],
+        'subject' => ['required', 'string', 'max:150', 'min:3'],
+        'message' => ['required', 'string', 'max:1000', 'min:10'],
+    ]);
+
+    // Sanitize
+    $sanitized = [
+        'name' => htmlspecialchars(strip_tags($validated['name']), ENT_QUOTES, 'UTF-8'),
+        'email' => filter_var($validated['email'], FILTER_SANITIZE_EMAIL),
+        'subject' => htmlspecialchars(strip_tags($validated['subject']), ENT_QUOTES, 'UTF-8'),
+        'message' => htmlspecialchars(strip_tags($validated['message']), ENT_QUOTES, 'UTF-8'),
+    ];
+
+    // ✨ NEW: Save to database
+    \App\Models\ContactMessage::create([
+        'name' => $sanitized['name'],
+        'email' => $sanitized['email'],
+        'subject' => $sanitized['subject'],
+        'message' => $sanitized['message'],
+        'ip_address' => $request->ip(),
+    ]);
+
+    return back()->with('success', 'Thanks for reaching out! I\'ll get back to you soon.');
+}
 
         // Enhanced validation with stricter email rules
         $validated = $request->validate([

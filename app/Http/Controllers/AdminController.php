@@ -18,7 +18,7 @@ class AdminController extends Controller
     {
         $password = $request->input('password');
         
-        // Check password (change 'your-secret-password' to your actual password)
+        // Check password (change 'Nhunzvi00' to your actual password)
         if ($password === 'your-secret-password') {
             session(['admin_logged_in' => true]);
             return redirect()->route('admin.messages');

@@ -42,7 +42,6 @@ class PortfolioController extends Controller
 
     public function projects()
     {
-<<<<<<< HEAD
         $project = [
             [
                 'title' => 'TenderReach',
@@ -65,9 +64,9 @@ class PortfolioController extends Controller
         ];
 
         return view('portfolio.projects', compact('project'));
-=======
+
         return view('portfolio.projects', ['project' => []]);
->>>>>>> c502ee5727599d585be6cee745403feb5aed10aa
+
     }
 
     public function contact()
@@ -173,8 +172,7 @@ class PortfolioController extends Controller
             'Content-Type' => 'application/pdf',
         ]);
     }
-<<<<<<< HEAD
+
 }
-=======
-}
->>>>>>> c502ee5727599d585be6cee745403feb5aed10aa
+
+

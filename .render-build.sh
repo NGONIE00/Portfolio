@@ -1,59 +1,68 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 
-echo "🚀 Starting Laravel deployment build..."
+echo "🚀 Starting production build..."
 
-# Check PHP version
-echo "🔍 Checking PHP version..."
-php -v
-
-# Install PHP dependencies
-echo "📦 Installing Composer dependencies..."
-composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
-
-# Install Node.js dependencies
-echo "📦 Installing NPM dependencies..."
-npm ci --prefer-offline --no-audit
-
-# Build frontend assets
-echo "🏗️ Building frontend assets..."
-npm run build
-
-# Generate application key if not set
-if [ -z "$APP_KEY" ]; then
-    echo "🔑 Generating application key..."
-    php artisan key:generate --force
-else
-    echo "✅ APP_KEY already set"
-fi
-
-# Clear and cache configuration
-echo "⚙️ Optimizing Laravel..."
-php artisan config:clear || true
-php artisan route:clear || true
-php artisan view:clear || true
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-
-# Create storage directories
-echo "📁 Creating storage directories..."
+# -----------------------------
+# Prepare directories & permissions
+# -----------------------------
 mkdir -p storage/framework/{sessions,views,cache}
-mkdir -p storage/logs
-mkdir -p bootstrap/cache
-chmod -R 775 storage bootstrap/cache || true
+mkdir -p storage/logs bootstrap/cache database public/build
+chmod -R 777 storage bootstrap/cache
 
-# Create database if using SQLite
-if [ "$DB_CONNECTION" != "pgsql" ] && [ "$DB_CONNECTION" != "mysql" ]; then
-    if [ ! -f database/database.sqlite ]; then
-        echo "💾 Creating SQLite database..."
-        touch database/database.sqlite
-        chmod 664 database/database.sqlite
-    fi
-    # Run migrations if database exists
-    if [ -f database/database.sqlite ]; then
-        php artisan migrate --force || echo "⚠️ Migration skipped or failed"
-    fi
+# SQLite database
+if [ ! -f database/database.sqlite ]; then
+  touch database/database.sqlite
+  chmod 664 database/database.sqlite
 fi
 
-echo "✅ Build completed successfully!"
+# -----------------------------
+# Install PHP dependencies
+# -----------------------------
+echo "📦 Installing Composer dependencies..."
+composer install --no-dev --optimize-autoloader --no-interaction
+
+# -----------------------------
+# Install Node deps & build Vite assets
+# -----------------------------
+if [ -f package.json ]; then
+  echo "📦 Installing Node dependencies..."
+  npm ci --prefer-offline --no-audit || npm install
+  
+  echo "🏗️ Building frontend assets..."
+  npm run build
+  
+  echo "📁 Checking build output..."
+  ls -lha public/build/ || echo "Build directory empty"
+  
+  # Check for manifest in multiple possible locations
+  if [ -f public/build/manifest.json ]; then
+    echo "✅ Vite manifest found at public/build/manifest.json"
+  elif [ -f public/build/.vite/manifest.json ]; then
+    echo "✅ Vite manifest found at public/build/.vite/manifest.json"
+  else
+    echo "❌ ERROR: Vite manifest not found!"
+    echo "Contents of public/build:"
+    find public/build -type f || echo "Directory is empty"
+    exit 1
+  fi
+fi
+
+# -----------------------------
+# Run migrations
+# -----------------------------
+echo "🗄️ Running migrations..."
+php artisan migrate --force || echo "⚠️ Migrations skipped"
+
+# -----------------------------
+# Optimize Laravel
+# -----------------------------
+echo "⚡ Optimizing Laravel..."
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+
+# Final permissions
+chmod -R 777 storage bootstrap/cache
+
+echo "✅ Build finished successfully!"

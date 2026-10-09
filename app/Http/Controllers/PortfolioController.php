@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\ContactMessage;
 
 class PortfolioController extends Controller
 {
@@ -27,7 +28,6 @@ class PortfolioController extends Controller
             ['file' => 'git.svg', 'bottom' => 'bottom-1/5', 'left' => 'left-1/3', 'delay' => 'delay-[12s]'],
             ['file' => 'kubernetes.svg', 'top' => 'top-1/5', 'right' => 'right-1/4', 'delay' => 'delay-[13s]'],
             ['file' => 'docker.svg', 'bottom' => 'bottom-1/2', 'right' => 'right-1/5', 'delay' => 'delay-[14s]'],
-            ['file' => 'javaScript.svg', 'top' => 'top-1/2', 'left' => 'left-1/6', 'delay' => 'delay-[15s]'],
             ['file' => 'jenkins.svg', 'bottom' => 'bottom-1/6', 'right' => 'right-1/6', 'delay' => 'delay-[16s]'],
             ['file' => 'livewire.svg', 'top' => 'top-1/6', 'left' => 'left-1/6', 'delay' => 'delay-[17s]'],
         ];
@@ -42,6 +42,7 @@ class PortfolioController extends Controller
 
     public function projects()
     {
+<<<<<<< HEAD
         $project = [
             [
                 'title' => 'TenderReach',
@@ -64,6 +65,9 @@ class PortfolioController extends Controller
         ];
 
         return view('portfolio.projects', compact('project'));
+=======
+        return view('portfolio.projects', ['project' => []]);
+>>>>>>> c502ee5727599d585be6cee745403feb5aed10aa
     }
 
     public function contact()
@@ -89,11 +93,11 @@ class PortfolioController extends Controller
                 'string',
                 'max:100',
                 'min:2',
-                'regex:/^[a-zA-Z\s\-\'\.]+$/u', // Only letters, spaces, hyphens, apostrophes, and periods
+                'regex:/^[a-zA-Z\s\-\'\.]+$/u',
             ],
             'email' => [
                 'required',
-                'email:rfc,dns', // RFC compliant email with DNS validation
+                'email:rfc,dns',
                 'max:255',
             ],
             'subject' => [
@@ -132,7 +136,16 @@ class PortfolioController extends Controller
             'message' => htmlspecialchars(strip_tags($validated['message']), ENT_QUOTES, 'UTF-8'),
         ];
 
-        // Log the message (you can review them in storage/logs/laravel.log)
+        // Save to database
+        ContactMessage::create([
+            'name' => $sanitized['name'],
+            'email' => $sanitized['email'],
+            'subject' => $sanitized['subject'],
+            'message' => $sanitized['message'],
+            'ip_address' => $request->ip(),
+        ]);
+
+        // Log the message
         \Log::info('Portfolio Contact Message', [
             'name' => $sanitized['name'],
             'email' => $sanitized['email'],
@@ -152,7 +165,6 @@ class PortfolioController extends Controller
         $filePath = storage_path('app/private/Ngonidzashe_Hunzvi_CV.pdf');
 
         if (!file_exists($filePath)) {
-            // Gracefully handle missing CV file
             return redirect()->route('portfolio.about')
                 ->with('info', 'CV is currently being updated. Please check back soon.');
         }
@@ -161,4 +173,8 @@ class PortfolioController extends Controller
             'Content-Type' => 'application/pdf',
         ]);
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> c502ee5727599d585be6cee745403feb5aed10aa

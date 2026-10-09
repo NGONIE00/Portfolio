@@ -42,7 +42,28 @@ class PortfolioController extends Controller
 
     public function projects()
     {
-    return view('portfolio.projects', ['project' => []]);
+        $project = [
+            [
+                'title' => 'TenderReach',
+                'description' => 'A WhatsApp-based procurement transparency and supplier support platform for Zimbabwe. Features a WhatsApp-first assistant and a Knowledge Centre with an open-tender index sourced from the PRAZ public eGP board, plus a Founding Supplier Programme.',
+                'icon' => '📋',
+                'image' => asset('projects/tenderreach.png'),
+                'tech' => ['Node.js', 'Express', 'WhatsApp Cloud API', 'Supabase', 'Airtable', 'Vercel'],
+                'code' => 'https://github.com/NGONIE00/tendereach_zw',
+                'demo' => 'https://tendereachzw.vercel.app',
+            ],
+            [
+                'title' => 'Dare — The Digital Council',
+                'description' => 'A voice platform for the Global South, starting in Zimbabwe. Enables real-time voice rooms with speaking indicators, AI-powered moderation and summaries, hand-raise notifications, and a USSD (*447#) path for feature phones.',
+                'icon' => '🎙️',
+                'image' => asset('projects/dare.png'),
+                'tech' => ['Next.js', 'TypeScript', 'Tailwind CSS', 'Supabase', 'Agora RTC', 'Gemini AI'],
+                'code' => 'https://github.com/NGONIE00/dare-mini-mvp',
+                'demo' => 'https://dare-mini-mvp.vercel.app',
+            ],
+        ];
+
+        return view('portfolio.projects', compact('project'));
     }
 
     public function contact()
@@ -119,25 +140,25 @@ class PortfolioController extends Controller
             'message' => $sanitized['message'],
             'ip' => $request->ip(),
             'user_agent' => $request->userAgent(),
-            'time' => now()->format('Y-m-d H:i:s')
+            'time' => now()->format('Y-m-d H:i:s'),
         ]);
 
         // Success message
         return back()->with('success', 'Thanks for reaching out! I\'ll get back to you soon.');
     }
+
     public function downloadCV()
     {
         $filePath = storage_path('app/private/Ngonidzashe_Hunzvi_CV.pdf');
-        
+
         if (!file_exists($filePath)) {
             // Gracefully handle missing CV file
             return redirect()->route('portfolio.about')
                 ->with('info', 'CV is currently being updated. Please check back soon.');
         }
-        
+
         return response()->download($filePath, 'Ngonidzashe_Hunzvi_CV.pdf', [
             'Content-Type' => 'application/pdf',
         ]);
     }
-    
 }

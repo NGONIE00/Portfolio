@@ -25,16 +25,17 @@
                     <x-project.card
                         :title="$p['title']"
                         :description="$p['description']"
-                        :icon="$p['icon']"
+                        :icon="$p['icon'] ?? '💡'"
+                        :image="$p['image'] ?? null"
                         bg="bg-gray-100 dark:bg-neutral-800"
-                        :tech="$p['tech']"
+                        :tech="$p['tech'] ?? []"
                         :code="$p['code'] ?? null"
                         :demo="$p['demo'] ?? null"
                     />
                 @endforeach
             </div>
         @else
-           <!-- Empty State -->
+            <!-- Empty State -->
             <div class="text-center py-16">
                 <div class="text-6xl mb-6">🚧</div>
                 <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">
@@ -42,7 +43,7 @@
                 </h3>
                 <p class="text-gray-600 dark:text-gray-400 max-w-md mx-auto">
                     I'm currently working on some exciting projects. Check back soon to see what I've been building!
-                </p> 
+                </p>
             </div>
         @endif
     </div>

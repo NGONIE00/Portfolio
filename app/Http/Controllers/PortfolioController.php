@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\ContactMessage;
+use Illuminate\Http\Request;
 
 class PortfolioController extends Controller
 {
@@ -28,6 +28,7 @@ class PortfolioController extends Controller
             ['file' => 'git.svg', 'bottom' => 'bottom-1/5', 'left' => 'left-1/3', 'delay' => 'delay-[12s]'],
             ['file' => 'kubernetes.svg', 'top' => 'top-1/5', 'right' => 'right-1/4', 'delay' => 'delay-[13s]'],
             ['file' => 'docker.svg', 'bottom' => 'bottom-1/2', 'right' => 'right-1/5', 'delay' => 'delay-[14s]'],
+            ['file' => 'javaScript.svg', 'top' => 'top-1/2', 'left' => 'left-1/6', 'delay' => 'delay-[15s]'],
             ['file' => 'jenkins.svg', 'bottom' => 'bottom-1/6', 'right' => 'right-1/6', 'delay' => 'delay-[16s]'],
             ['file' => 'livewire.svg', 'top' => 'top-1/6', 'left' => 'left-1/6', 'delay' => 'delay-[17s]'],
         ];
@@ -47,16 +48,16 @@ class PortfolioController extends Controller
                 'title' => 'TenderReach',
                 'description' => 'A WhatsApp-based procurement transparency and supplier support platform for Zimbabwe. Features a WhatsApp-first assistant and a Knowledge Centre with an open-tender index sourced from the PRAZ public eGP board, plus a Founding Supplier Programme.',
                 'icon' => '📋',
-                'image' => asset('projects/tenderreach.png'),
+                'image' => asset('tenderreach.png'),
                 'tech' => ['Node.js', 'Express', 'WhatsApp Cloud API', 'Supabase', 'Airtable', 'Vercel'],
-                'code' => 'https://github.com/NGONIE00/tendereach_zw',
+                'code' => null,
                 'demo' => 'https://tendereachzw.vercel.app',
             ],
             [
                 'title' => 'Dare — The Digital Council',
                 'description' => 'A voice platform for the Global South, starting in Zimbabwe. Enables real-time voice rooms with speaking indicators, AI-powered moderation and summaries, hand-raise notifications, and a USSD (*447#) path for feature phones.',
                 'icon' => '🎙️',
-                'image' => asset('projects/dare.png'),
+                'image' => asset('dare.png'),
                 'tech' => ['Next.js', 'TypeScript', 'Tailwind CSS', 'Supabase', 'Agora RTC', 'Gemini AI'],
                 'code' => 'https://github.com/NGONIE00/dare-mini-mvp',
                 'demo' => 'https://dare-mini-mvp.vercel.app',
@@ -64,9 +65,6 @@ class PortfolioController extends Controller
         ];
 
         return view('portfolio.projects', compact('project'));
-
-        return view('portfolio.projects', ['project' => []]);
-
     }
 
     public function contact()
@@ -92,11 +90,11 @@ class PortfolioController extends Controller
                 'string',
                 'max:100',
                 'min:2',
-                'regex:/^[a-zA-Z\s\-\'\.]+$/u',
+                'regex:/^[a-zA-Z\s\-\'\.]+$/u', // Only letters, spaces, hyphens, apostrophes, and periods
             ],
             'email' => [
                 'required',
-                'email:rfc,dns',
+                'email:rfc,dns', // RFC compliant email with DNS validation
                 'max:255',
             ],
             'subject' => [
@@ -135,7 +133,7 @@ class PortfolioController extends Controller
             'message' => htmlspecialchars(strip_tags($validated['message']), ENT_QUOTES, 'UTF-8'),
         ];
 
-        // Save to database
+        // Save to database (viewable in the admin inbox)
         ContactMessage::create([
             'name' => $sanitized['name'],
             'email' => $sanitized['email'],
@@ -144,7 +142,7 @@ class PortfolioController extends Controller
             'ip_address' => $request->ip(),
         ]);
 
-        // Log the message
+        // Log the message (storage/logs/laravel.log)
         \Log::info('Portfolio Contact Message', [
             'name' => $sanitized['name'],
             'email' => $sanitized['email'],
@@ -155,7 +153,6 @@ class PortfolioController extends Controller
             'time' => now()->format('Y-m-d H:i:s'),
         ]);
 
-        // Success message
         return back()->with('success', 'Thanks for reaching out! I\'ll get back to you soon.');
     }
 
@@ -164,6 +161,7 @@ class PortfolioController extends Controller
         $filePath = storage_path('app/private/Ngonidzashe_Hunzvi_CV.pdf');
 
         if (!file_exists($filePath)) {
+            // Gracefully handle missing CV file
             return redirect()->route('portfolio.about')
                 ->with('info', 'CV is currently being updated. Please check back soon.');
         }
@@ -172,7 +170,4 @@ class PortfolioController extends Controller
             'Content-Type' => 'application/pdf',
         ]);
     }
-
 }
-
-

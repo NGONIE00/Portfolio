@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'Ngonidzashe Hunzvi') }}</title>
-
+    <title>@yield('title', 'Ngonidzashe Hunzvi')</title>
+    <meta name="description" content="@yield('description', 'Full-Stack Developer and Computing & Information Systems professional from Zimbabwe.')">
     {{-- Vite CSS with CDN fallback --}}
     @production
         @if(file_exists(public_path('build/manifest.json')))

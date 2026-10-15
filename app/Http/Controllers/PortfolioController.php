@@ -50,7 +50,7 @@ class PortfolioController extends Controller
                 'icon' => '📋',
                 'image' => asset('tenderreach.png'),
                 'tech' => ['Node.js', 'Express', 'WhatsApp Cloud API', 'Supabase', 'Airtable', 'Vercel'],
-                'code' => null,
+                'code' => 'https://github.com/NGONIE00/tendereach_zw',
                 'demo' => 'https://tendereachzw.vercel.app',
             ],
             [

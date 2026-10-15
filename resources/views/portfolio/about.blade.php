@@ -8,31 +8,36 @@
 <!-- Hero -->
 <section class="pt-20 pb-16 bg-white dark:bg-gray-900 text-center">
     <div class="section-container border border-gray-200 dark:border-gray-700 rounded-2xl py-12">
-        <h1 class="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-4">
-            About <span class="text-blue-600 dark:text-blue-400">Me</span>
-        </h1>
-        <p class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
-            Ngonidzashe Hunzvi
-        </p>
-        <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-6">
-            Full-Stack Developer · Computing &amp; Information Systems · Digital Product Builder
-        </p>
-        <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-gray-500 dark:text-gray-400">
-            <span class="inline-flex items-center">
-                <svg class="w-4 h-4 mr-2 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                </svg>
-                Harare, Zimbabwe
-            </span>
-            <span class="inline-flex items-center">
-                <svg class="w-4 h-4 mr-2 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                Available for remote opportunities worldwide
-            </span>
-        </div>
+    <h1 class="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-8">
+        About <span class="text-blue-600 dark:text-blue-400">Me</span>
+    </h1>
+
+    <img src="{{ asset('profile.png') }}"
+         alt="Ngonidzashe Hunzvi"
+         class="w-36 h-36 md:w-44 md:h-44 mx-auto mb-6 rounded-full object-cover ring-4 ring-blue-600 dark:ring-blue-400 ring-offset-4 ring-offset-white dark:ring-offset-gray-900">
+
+    <p class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
+        Ngonidzashe Hunzvi
+    </p>
+    <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-6">
+        Full-Stack Developer · Computing &amp; Information Systems · Digital Product Builder
+    </p>
+    <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-gray-500 dark:text-gray-400">
+        <span class="inline-flex items-center">
+            <svg class="w-4 h-4 mr-2 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            Harare, Zimbabwe
+        </span>
+        <span class="inline-flex items-center">
+            <svg class="w-4 h-4 mr-2 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Available for remote opportunities worldwide
+        </span>
     </div>
+</div>
 </section>
 
 @if(session('info'))

@@ -12,7 +12,7 @@
         About <span class="text-blue-600 dark:text-blue-400">Me</span>
     </h1>
 
-    <img src="{{ asset('profile.jpeg') }}"
+    <img src="{{ asset('profile.jpg') }}"
          alt="Ngonidzashe Hunzvi"
          class="w-36 h-36 md:w-44 md:h-44 mx-auto mb-6 rounded-full object-cover ring-4 ring-blue-600 dark:ring-blue-400 ring-offset-4 ring-offset-white dark:ring-offset-gray-900">
 

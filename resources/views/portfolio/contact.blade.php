@@ -68,7 +68,8 @@
                                    focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:border-blue-400
                                    transition-all duration-300 
                                    placeholder:text-gray-400 dark:placeholder:text-gray-500"
-                            placeholder="John Doe"
+                            placeholder="Your_Name"
+                        
                         >
                         @error('name')
                             <p class="text-sm text-red-600 dark:text-red-400 mt-2 flex items-center">
@@ -98,7 +99,7 @@
                                    focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:border-blue-400
                                    transition-all duration-300
                                    placeholder:text-gray-400 dark:placeholder:text-gray-500"
-                            placeholder="john@example.com"
+                            placeholder="your_name@example.com"
                             autocomplete="email"
                         >
                         @error('email')
